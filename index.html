@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Chronomètre Odometer</title>
+
+
+  <!-- Odometer CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css" />
+
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: transparent;
+      color: #fff;
+      display: flex;
+      justify-content: flex-end;
+      align-items: flex-end;
+      height: 100vh;
+      flex-direction: column;
+    }
+
+    .chrono-container {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+    }
+
+    .time-unit {
+      font-family: 'Roboto' !important;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .time-label {
+      font-size: 10rem;
+      color: #ffffff;
+    }
+
+    .separator {
+      font-family: 'Roboto' !important;
+      font-size: 15rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    .odometer {
+        font-family: 'Roboto' !important;
+      font-size: 15rem;
+      font-weight: 900;
+      color: #fff;
+    }
+
+    /* Transition personnalisée */
+    .odometer.odometer-animating-up .odometer-ribbon-inner,
+    .odometer.odometer-animating-down .odometer-ribbon-inner,
+    .odometer.odometer-animating .odometer-ribbon-inner {
+      -webkit-transition-duration: 1s !important;
+      -moz-transition-duration: 1s !important;
+      -ms-transition-duration: 1s !important;
+      -o-transition-duration: 1s !important;
+      transition-duration: 1s !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="chrono-container">
+    <div class="time-unit">
+      <div id="days" class="odometer">00</div>
+      <div class="time-label"></div>
+    </div>
+    <div class="separator">:</div>
+    <div class="time-unit">
+      <div id="hours" class="odometer">00</div>
+      <div class="time-label"></div>
+    </div>
+    <div class="separator">:</div>
+    <div class="time-unit">
+      <div id="minutes" class="odometer">00</div>
+      <div class="time-label"></div>
+    </div>
+    <div class="separator">:</div>
+    <div class="time-unit">
+      <div id="seconds" class="odometer">00</div>
+      <div class="time-label"></div>
+    </div>
+  </div>
+
+  <!-- Odometer JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
+  <script>
+    const startTime = new Date(2025, 4, 7, 14, 34, 0).getTime();
+
+    const daysEl = document.getElementById('days');
+    const hoursEl = document.getElementById('hours');
+    const minutesEl = document.getElementById('minutes');
+    const secondsEl = document.getElementById('seconds');
+
+    const daysOdo = new Odometer({ el: daysEl, value: 0 });
+    const hoursOdo = new Odometer({ el: hoursEl, value: 0 });
+    const minutesOdo = new Odometer({ el: minutesEl, value: 0 });
+    const secondsOdo = new Odometer({ el: secondsEl, value: 0 });
+
+    function updateChrono() {
+      const now = Date.now();
+      let diffInSeconds = Math.floor((now - startTime) / 1000);
+      if (diffInSeconds < 0) diffInSeconds = 0;
+
+      const days = Math.floor(diffInSeconds / 86400);
+      const hours = Math.floor((diffInSeconds % 86400) / 3600);
+      const minutes = Math.floor((diffInSeconds % 3600) / 60);
+      const seconds = diffInSeconds % 60;
+
+      daysOdo.update(days);
+      hoursOdo.update(hours);
+      minutesOdo.update(minutes);
+      secondsOdo.update(seconds);
+      if (days === 0) {
+        daysEl.parentElement.style.display = "none";
+        document.querySelectorAll('.separator')[0].style.display = "none";
+      } else {
+        daysEl.parentElement.style.display = "flex";
+        document.querySelectorAll('.separator')[0].style.display = "block";
+      }
+    }
+
+    setInterval(updateChrono, 1000);
+    updateChrono();
+  </script>
+</body>
+</html>
